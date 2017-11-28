@@ -62,12 +62,7 @@
 // Definitions for the admin webserver.
 // A_SERVER determines whether or not the admin webpage is included in the sketch.
 // Normally, leave it in!
-#ifdef ESP32BUILD
-// Not available (yet) for ESP32
-#define A_SERVER 0        // Define local WebServer only if this define is set
-#else
 #define A_SERVER 1        // Define local WebServer only if this define is set
-#endif
 #define A_REFRESH 1				// Will the webserver refresh or not?
 #define A_SERVERPORT 80			// local webserver port
 #define A_MAXBUFSIZE 192		// Must be larger than 128, but small enough to work

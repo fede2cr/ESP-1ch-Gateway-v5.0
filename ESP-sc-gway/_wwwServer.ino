@@ -651,7 +651,16 @@ static void systemData()
 		response +="<td style=\"border: 1px solid black; width:40px;\"><a href=\"SPEED=80\"><button>80</button></a></td>";
 		response +="<td style=\"border: 1px solid black; width:40px;\"><a href=\"SPEED=160\"><button>160</button></a></td>";
 		response+="</tr>";
-	response +="<tr><td class=\"cell\">ESP Chip ID</td><td class=\"cell\">"; response+=ESP.getChipId(); response+="</tr>";
+#ifdef ESP32BUILD
+  {
+    char serial[13];
+    uint64_t chipid = ESP.getEfuseMac();
+    sprintf(serial,"%04X%08X", (uint16_t) (chipid>>32), (uint32_t) chipid);
+    response +="<tr><td class=\"cell\">ESP Chip ID</td><td class=\"cell\">"; response+=serial; response+="</tr>";
+  }
+#else
+  response +="<tr><td class=\"cell\">ESP Chip ID</td><td class=\"cell\">"; response+=ESP.getChipId(); response+="</tr>";
+#endif  
 	response +="<tr><td class=\"cell\">OLED</td><td class=\"cell\">"; response+=OLED; response+="</tr>";
 		
 #if STATISTICS>=1
@@ -679,7 +688,11 @@ static void wifiData()
 	response +="<tr><th class=\"thead\">Parameter</th><th class=\"thead\">Value</th></tr>";
 	
 	response +="<tr><td class=\"cell\">WiFi host</td><td class=\"cell\">"; 
+#ifdef ESP32BUILD
+  response +=WiFi.getHostname(); response+="</tr>";
+#else
 	response +=wifi_station_get_hostname(); response+="</tr>";
+#endif
 
 	response +="<tr><td class=\"cell\">WiFi SSID</td><td class=\"cell\">"; 
 	response +=WiFi.SSID(); response+="</tr>";
@@ -962,7 +975,8 @@ void setupWWW()
 		server.sendHeader("Location", String("/"), true);
 		server.send ( 302, "text/plain", "");
 	});
-	
+
+#ifndef ESP32BUILD
 	server.on("/SPEED=80", []() {
 		system_update_cpu_freq(80);
 		server.sendHeader("Location", String("/"), true);
@@ -973,6 +987,7 @@ void setupWWW()
 		server.sendHeader("Location", String("/"), true);
 		server.send ( 302, "text/plain", "");
 	});
+#endif
 
 	// Update the sketch. Not yet implemented
 	server.on("/UPDATE=1", []() {

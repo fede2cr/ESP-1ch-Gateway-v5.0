@@ -100,8 +100,15 @@ int debug=1;									// Debug level! 0 is no msgs, 1 normal, 2 extensive
 
 // You can switch webserver off if not necessary but probably better to leave it in.
 #if A_SERVER==1
+#ifdef ESP32BUILD
+#include <WiFiClient.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+WebServer server(A_SERVERPORT);
+#else
 #include <Streaming.h>          				// http://arduiniana.org/libraries/streaming/
   ESP8266WebServer server(A_SERVERPORT);
+#endif
 #endif
 using namespace std;
 
