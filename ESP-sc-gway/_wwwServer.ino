@@ -252,7 +252,11 @@ static void openWebPage()
 	if (gwayConfig.refresh) {
 		response += String() + "<!DOCTYPE HTML><HTML><HEAD><meta http-equiv='refresh' content='"+_WWW_INTERVAL+";http://";
 		printIP((IPAddress)WiFi.localIP(),'.',response);
+#ifdef ESP32BUILD
+    response += "'><TITLE>ESP32 1ch Gateway</TITLE>";
+#else    
 		response += "'><TITLE>ESP8266 1ch Gateway</TITLE>";
+#endif
 	}
 	else {
 		response += String() + "<!DOCTYPE HTML><HTML><HEAD><TITLE>ESP8266 1ch Gateway</TITLE>";
