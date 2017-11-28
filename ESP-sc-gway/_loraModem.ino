@@ -824,11 +824,44 @@ void initLoraModem()
 {
 	_state = S_INIT;
 	// Reset the transceiver chip with a pulse of 10 mSec
-	digitalWrite(pins.rst, HIGH);
+#ifdef ESP32BUILD
+	digitalWrite(pins.rst, LOW);
 	delayMicroseconds(10000);
-    digitalWrite(pins.rst, LOW);
+  digitalWrite(pins.rst, HIGH);
 	delayMicroseconds(10000);
-	
+#else
+  digitalWrite(pins.rst, HIGH);
+  delayMicroseconds(10000);
+  digitalWrite(pins.rst, LOW);
+  delayMicroseconds(10000);
+#endif
+  digitalWrite(pins.ss, HIGH);
+
+  // Check chip version first
+    uint8_t version = readRegister(REG_VERSION);        // Read the LoRa chip version id
+    if (version == 0x22) {
+        // sx1272
+#if DUSB>=2
+        Serial.println(F("WARNING:: SX1272 detected"));
+#endif
+        sx1272 = true;
+    } 
+  else if (version == 0x12) {
+        // sx1276?
+#if DUSB>=2
+            if (debug >=1) 
+        Serial.println(F("SX1276 starting"));
+#endif
+            sx1272 = false;
+  } 
+  else {
+#if DUSB>=2
+    Serial.print(F("Unknown transceiver="));
+    Serial.println(version,HEX);
+#endif
+    die("");
+    }
+
 	// 2. Set radio to sleep
 	opmode(OPMODE_SLEEP);										// set register 0x01 to 0x00
 
@@ -846,29 +879,6 @@ void initLoraModem()
 	// Low Noise Amplifier used in receiver
     writeRegister(REG_LNA, (uint8_t) LNA_MAX_GAIN);  						// 0x0C, 0x23
 	
-    uint8_t version = readRegister(REG_VERSION);				// Read the LoRa chip version id
-    if (version == 0x22) {
-        // sx1272
-#if DUSB>=2
-        Serial.println(F("WARNING:: SX1272 detected"));
-#endif
-        sx1272 = true;
-    } 
-	else if (version == 0x12) {
-        // sx1276?
-#if DUSB>=2
-            if (debug >=1) 
-				Serial.println(F("SX1276 starting"));
-#endif
-            sx1272 = false;
-	} 
-	else {
-#if DUSB>=2
-		Serial.print(F("Unknown transceiver="));
-		Serial.println(version,HEX);
-#endif
-		die("");
-    }
 	// 7. set sync word
     writeRegister(REG_SYNC_WORD, (uint8_t) 0x34);				// set 0x39 to 0x34 LORA_MAC_PREAMBLE
 	

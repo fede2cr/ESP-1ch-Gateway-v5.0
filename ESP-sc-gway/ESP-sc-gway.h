@@ -19,7 +19,15 @@
 //
 // ----------------------------------------------------------------------------------------
 
+// For Heltec ESP32 based WIFI_LoRa_32 boards (and may-be others as well)
+// REMOVE for ESP8266 builds
+#define ESP32BUILD  1
+
+#ifdef ESP32BUILD
+#define VERSION "V.5.0.2.H+; 171128a nOLED, 15/10"
+#else
 #define VERSION "V.5.0.2.H; 171118a nOLED, 15/10"
+#endif
 
 // This value of DEBUG determines whether some parts of code get compiled.
 // Also this is the initial value of debug parameter. 
@@ -40,7 +48,7 @@
 // This parameters contains the default value of SF, the actual version can be set with
 // the webserver and it will be stored in SPIFF
 // NOTE: The frequency is set in the loraModem.h file and is default 868.100000 MHz.
-#define _SPREADING SF9
+#define _SPREADING SF7
 
 // Channel Activity Detection
 // This function will scan for valid LoRa headers and determine the Spreading 
@@ -54,7 +62,12 @@
 // Definitions for the admin webserver.
 // A_SERVER determines whether or not the admin webpage is included in the sketch.
 // Normally, leave it in!
-#define A_SERVER 1				// Define local WebServer only if this define is set
+#ifdef ESP32BUILD
+// Not available (yet) for ESP32
+#define A_SERVER 0        // Define local WebServer only if this define is set
+#else
+#define A_SERVER 1        // Define local WebServer only if this define is set
+#endif
 #define A_REFRESH 1				// Will the webserver refresh or not?
 #define A_SERVERPORT 80			// local webserver port
 #define A_MAXBUFSIZE 192		// Must be larger than 128, but small enough to work
@@ -65,15 +78,21 @@
 // the firmware on your router witout having to be really close to the gateway and 
 // connect with USB.
 //
-#define A_OTA 1
+#ifdef ESP32BUILD
+// Not available (yet) for ESP32
+#define A_OTA 0
+#else
+#define A_OTA 0
+#endif
 
 // We support two pin-out configurations out-of-the-box: HALLARD and COMPRESULT.
 // If you use one of these two, just set the parameter to the right value.
 // If your pin definitions are different, update the loraModem.h file to reflect these settings.
 //	1: HALLARD
 //	2: COMRESULT pin out
-//	3: Other, define your own in loraModem.h
-#define _PIN_OUT 1
+//	3: For Heltec ESP32 based WIFI_LoRa_32 board
+//  4: Other, define your own in loraModem.h
+#define _PIN_OUT 3
 
 // Gather statistics on sensor and Wifi status
 // 0= No statistics
@@ -98,11 +117,20 @@
 #define _STRICT_1CH	0
 
 // Allows configuration through WifiManager AP setup. Must be 0 or 1					
+#ifdef ESP32BUILD
+// Not available (yet) for ESP32
 #define WIFIMANAGER 0
+#else
+#define WIFIMANAGER 0
+#endif
 
 // Define the name of the accesspoint if the gateway is in accesspoint mode (is
 // getting WiFi SSID and password using WiFiManager)
+#ifdef ESP32BUILD
+#define AP_NAME "ESP32-Gway-Things4U"
+#else
 #define AP_NAME "ESP8266-Gway-Things4U"
+#endif
 #define AP_PASSWD "MyPw01!"
 							
 
@@ -167,12 +195,12 @@
 //#define _THINGSERVER "yourServer.com"		// Server URL of the LoRa-udp.js handler
 
 // Gateway Ident definitions
-#define _DESCRIPTION "My ESP Gateway"
-#define _EMAIL "whoami@hotmail.com"
-#define _PLATFORM "ESP8266"
-#define _LAT 52.00
-#define _LON 5.900
-#define _ALT 00
+#define _DESCRIPTION "My ESP32 Gateway"
+#define _EMAIL "j.kersing@the-box.com"
+#define _PLATFORM "ESP32"
+#define _LAT 53.189
+#define _LON 6.557
+#define _ALT 8
 
 // ntp
 #define NTP_TIMESERVER "nl.pool.ntp.org"	// Country and region specific
@@ -195,8 +223,8 @@
 #define _BAUDRATE 115200					// Works for debug messages to serial momitor
 
 // if OLED Display is connected to i2c
-#define OLED 0								// Make define 1 on line if you have an OLED display connected
-#define OLED_SCL 5							// GPIO5 / D1
+#define OLED 1								// Make define 1 on line if you have an OLED display connected
+#define OLED_SCL 15							// GPIO5 / D1
 #define OLED_SDA 4							// GPIO4 / D2
 #define OLED_ADDR 0x3C						// Default 0x3C for 0.9", for 1.3" it is 0x78
 
@@ -216,11 +244,16 @@ struct wpas {
 // Note: DO NOT use the first and the last line of the stucture, these should be empty strings and
 //	the first line in te struct is reserved for WifiManager.
 //
+#if 0
 wpas wpa[] = {
 	{ "" , "" },							// Reserved for WiFi Manager
-	{ "aap", "aapPasswd" },
+  { "aap", "aapPasswd" },
 	{ "ape", "apePasswd" }
 };
+#else
+// Place outside version control to avoid the risk of commiting it to github ;-)
+#include "d:\arduino\wpa.h"
+#endif
 
 // For asserting and testing the following defines are used.
 //
@@ -229,3 +262,5 @@ wpas wpa[] = {
 #else
 #define ASSERT(cond) /**/
 #endif
+
+
