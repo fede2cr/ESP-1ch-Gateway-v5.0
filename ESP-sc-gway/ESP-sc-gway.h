@@ -19,6 +19,8 @@
 //
 // ----------------------------------------------------------------------------------------
 
+#define CFG_us915
+
 // For Heltec ESP32 based WIFI_LoRa_32 boards (and may-be others as well)
 // REMOVE for ESP8266 builds
 #define ESP32BUILD  1
@@ -178,7 +180,7 @@
 // MQTT definitions, these settings should be standard for TTN
 // and need not changing
 #define _TTNPORT 1700						// Standard port for TTN
-#define _TTNSERVER "router.eu.thethings.network"
+#define _TTNSERVER "router.us.thethings.network"
 
 // If you have a second back-end server defined such as Semtech or loriot.io
 // your can define _THINGPORT and _THINGSERVER with your own value.
@@ -190,16 +192,16 @@
 //#define _THINGSERVER "yourServer.com"		// Server URL of the LoRa-udp.js handler
 
 // Gateway Ident definitions
-#define _DESCRIPTION "My ESP32 Gateway"
-#define _EMAIL "j.kersing@the-box.com"
+#define _DESCRIPTION "greencore-esp32"
+#define _EMAIL "soporte@greencore.co.cr"
 #define _PLATFORM "ESP32"
-#define _LAT 53.189
-#define _LON 6.557
-#define _ALT 8
+#define _LAT 9.940207
+#define _LON -84.096097
+#define _ALT 1008
 
 // ntp
-#define NTP_TIMESERVER "nl.pool.ntp.org"	// Country and region specific
-#define NTP_TIMEZONES	1					// How far is our Timezone from UTC (excl daylight saving/summer time)
+#define NTP_TIMESERVER "cr.pool.ntp.org"	// Country and region specific
+#define NTP_TIMEZONES	-6					// How far is our Timezone from UTC (excl daylight saving/summer time)
 #define SECS_PER_HOUR	3600
 #define NTP_INTR 0							// Do NTP processing with interrupts or in loop();
 
@@ -239,16 +241,13 @@ struct wpas {
 // Note: DO NOT use the first and the last line of the stucture, these should be empty strings and
 //	the first line in te struct is reserved for WifiManager.
 //
-#if 0
+//#if 0
 wpas wpa[] = {
-	{ "" , "" },							// Reserved for WiFi Manager
-  { "aap", "aapPasswd" },
-	{ "ape", "apePasswd" }
+  { "", ""},
+  { "access-point", "password" },
+  { "foo", "bar"}
 };
-#else
-// Place outside version control to avoid the risk of commiting it to github ;-)
-#include "d:\arduino\wpa.h"
-#endif
+//#endif
 
 // For asserting and testing the following defines are used.
 //
@@ -257,5 +256,3 @@ wpas wpa[] = {
 #else
 #define ASSERT(cond) /**/
 #endif
-
-

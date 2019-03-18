@@ -28,7 +28,8 @@ long txDelay= 0x00;								// delay time on top of server TMST
 // Set center frequency. If in doubt, choose the first one, comment all others
 // Each "real" gateway should support the first 3 frequencies according to LoRa spec.
 
-int freqs [] = { 
+#ifdef CFG_eu868
+int freqs [] = {
 	868100000, 									// Channel 0, 868.1 MHz primary
 	868300000, 									// Channel 1, 868.3 MHz mandatory
 	868500000, 									// Channel 2, 868.5 MHz mandatory
@@ -41,6 +42,20 @@ int freqs [] = {
 	869525000									// Channel, for responses gateway (10%)
 	// TTN defines an additional channel at 869.525Mhz using SF9 for class B. Not used
 };
+#endif
+
+#ifdef CFG_us915
+int freqs [] = {
+  904300000,                  // Channel 0, 904.3 MHz primary
+  904500000,                  // Channel 1, 904.5 MHz mandatory
+  904700000,                  // Channel 2, 904.7 MHz mandatory
+  904900000,                  // Channel 3, 904.9 MHz
+  905100000,
+  905300000
+  // TTN defines an additional channel at 869.525Mhz using SF9 for class B. Not used
+};
+#endif
+
 uint32_t  freq = freqs[0];
 uint8_t	 ifreq = 0;								// Channel Index
 
@@ -375,4 +390,3 @@ struct LoraUp {
 #define MGT_RESET					0x15	// Not a LoRa Gateway Spec message
 #define MGT_SET_SF					0x16
 #define MGT_SET_FREQ				0x17
-

@@ -57,7 +57,6 @@
 #include <gBase64.h>							// https://github.com/adamvr/arduino-base64 (changed the name)
 #ifndef ESP32BUILD
 #include <ESP8266mDNS.h>
-
 extern "C" {
 #include "user_interface.h"
 #include "lwip/err.h"
@@ -1333,6 +1332,10 @@ void setup() {
 	display.drawString(0, 24, "READY");
 	display.display();
 #endif
+
+  MDNS.begin(hostname);
+  MDNS.enableWorkstation();
+
 
 	Serial.println(F("--------------------------------------"));
 }//setup
