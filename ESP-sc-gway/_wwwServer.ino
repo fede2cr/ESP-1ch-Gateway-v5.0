@@ -1008,11 +1008,13 @@ void setupWWW()
 	// Maybe not all information should be put on the screen since it
 	// may take too much time to serve all information before a next
 	// package interrupt arrives at the gateway
-	
-	Serial.print(F("WWW Server started on port "));
-	Serial.println(A_SERVERPORT);
+
+    
+  Serial.print(F("WWW Server started on "));
+  Serial.print(WiFi.localIP());
+  Serial.print(":");
+  Serial.println(A_SERVERPORT);
 	return;
 }
 
 #endif
-
